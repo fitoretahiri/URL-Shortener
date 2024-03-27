@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Redirect } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Redirect,
+} from '@nestjs/common';
 import { UrlService } from './url.service';
 import { AddUrlDto } from './dto/add-url.dto';
 import { UrlDto } from './dto/url.dto';
@@ -21,5 +29,11 @@ export class UrlController {
   @Post()
   createUrl(@Body() urlDto: AddUrlDto): Promise<UrlDto> {
     return this.urlService.addUrl(urlDto);
+  }
+
+  @Delete(':short_url')
+  removeUrl(@Param('short_url') short_url: string): Promise<UrlDto> {
+    const key = short_url.split('/').pop();
+    return this.urlService.removeUrl(key);
   }
 }

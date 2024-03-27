@@ -44,4 +44,20 @@ export class UrlService {
 
     return results.map((url) => UrlDto.toDto(url));
   }
+
+  async removeUrl(key: string): Promise<UrlDto> {
+    const url = await this.prisma.url.findFirst({
+      where: { key: key },
+    });
+
+    if (!url) {
+      throw new NotFoundException('URL not found');
+    }
+
+    await this.prisma.url.delete({
+      where: { key: key },
+    });
+
+    return UrlDto.toDto(url);
+  }
 }
