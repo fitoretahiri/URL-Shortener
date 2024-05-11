@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  NotAcceptableException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AddUrlDto } from './dto/add-url.dto';
 import { UrlDto } from './dto/url.dto';
@@ -15,6 +19,13 @@ export class UrlService {
     });
     if (url) {
       return UrlDto.toDto(url);
+    }
+
+    if (
+      !urlDto.long_url.includes('http://') &&
+      !urlDto.long_url.includes('https://')
+    ) {
+      throw new NotAcceptableException('Invalid URL');
     }
     const res = await this.prisma.url.create({
       data: {
